@@ -1,7 +1,32 @@
 ## Project: Perception Pick & Place
-### Writeup Template: You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+<img src="pr2pick4x.gif" width="480" />
+<img src="capturefeatures4x.gif" width="480" />
+---
+[//]: # (Image References)
+[accuracy]: ./accuracy.png
+[clustered-objects]: ./clustered-objects.jpg
+[clusters]: ./clusters.jpg
+[confusion]: ./confusion.jpg
+[downsampled]: ./downsampled.jpg
+[labeled1]: ./labeled1.jpg
+[labeled2]: ./labeled2.jpg
+[labeled3]: ./labeled.jpg
+[labeled]: ./labeled-segmented.jpg
+[table]: ./table.jpg
 
 ---
+
+![accuracy]
+![clustered-objects]
+![clusters]
+![confusion]
+![downsampled]
+![labeled1]
+![labeled2]
+![labeled3]
+![labeled]
+![table]
+
 
 
 # Required Steps for a Passing Submission:
