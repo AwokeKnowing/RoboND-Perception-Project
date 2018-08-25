@@ -1,5 +1,4 @@
 ## Project: Perception Pick & Place
----
 
 [//]: # (Image References)
 
@@ -14,23 +13,11 @@
 [labeled]: ./images/labeled-segmented.jpg
 [table]: ./images/table.jpg
 
----
-
 <img src="images/pr2pick4x.gif" width="960" />
 ![labeled3]
 ---
-
-
-
-
-
-
-
-
-
-
 ![labeled]
-
+---
 
 The main task in this project is to correctly recognize various objects on a table, locate them in 3D space, and output information needed for a robot to move the object to one of the bins.
 
