@@ -62,6 +62,16 @@ To obtain orientation-invariant features, in addition to capturing multiple angl
 
 In total, there are 288 features (32 * 3 + 32 * 3  + 32 * 3) in each sample.   Each feature is normalized to be -1 to 1 so the XYZ and color features would have similar scale.
 
+```python
+# Extract histogram features
+chists = compute_color_histograms(sample_cloud, using_hsv=False)
+hsvhists = compute_color_histograms(sample_cloud, using_hsv=True)
+normals = get_normals(sample_cloud)
+nhists = compute_normal_histograms(normals)
+feature = np.concatenate((chists, nhists, hsvhists))
+```
+
+(see `features.py` for the implementation of the histogramming)
 
 We trained a single model containing all the objects in worlds 1, 2, and 3, which were  8 objects total: 'sticky_notes', 'book', 'snacks', 'biscuits', 'eraser', 'soap2', 'soap', 'glue'.   Thus the training data set contained 400 samples (50 * 8) with 288 features and classifed 8 objects.
 
@@ -72,7 +82,8 @@ We plot a matrix of confusion showing high confidence levels.  The errors evenly
 
 ![confusion]
 
-Interestingly, the confusion matrix shows a bright spot of misclassifying glue and soap2, which is also the only error in the final table recognition task.  The error however is mostly caused by the soap object occluding the glue object.  If the soap object were removed before the glue (misclassified as soap2), then subsequently the glue object would be recognized correctly for 100% accuracy.   
+Interestingly, the confusion matrix shows a bright spot of misclassifying glue and soap2, which is also the only error in the final table recognition task.  The error however is mostly caused by the soap object occluding the glue object.  If the soap object were removed before the glue (misclassified as soap2), then subsequently the glue object would be recognized correctly for 100% accuracy.
+
 Once the objects are recognized, their centroid is calculated and they are compared to the pick list, and if they are in the pick list, a yaml-formatted message is output and message sent to a separate task which takes a centroid source and destination and handles grasping the object and moving it to the destination.
 
 ![labeled1]
@@ -82,5 +93,5 @@ Once the objects are recognized, their centroid is calculated and they are compa
 
 The task of building up the collusion map was left for a future effort, but even without it, the robot is able to collect several of the objects.
 
-
+<img src="images/pr2pick4x.gif" width="960" />
 
