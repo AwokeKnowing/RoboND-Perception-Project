@@ -9,14 +9,17 @@
 [downsampled]: ./images/downsampled.jpg
 [labeled1]: ./images/labeled1.jpg
 [labeled2]: ./images/labeled2.jpg
-[labeled3]: ./images/labeled.jpg
-[labeled]: ./images/labeled-segmented.jpg
+[labeled]: ./images/labeled.jpg
+[labeled-segmented]: ./images/labeled-segmented.jpg
 [table]: ./images/table.jpg
 
 <img src="images/pr2pick4x.gif" width="960" />
-![labeled3]
+
+![labeled-segmented]
 ---
+
 ![labeled]
+
 ---
 
 The main task in this project is to correctly recognize various objects on a table, locate them in 3D space, and output information needed for a robot to move the object to one of the bins.
