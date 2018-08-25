@@ -15,7 +15,7 @@
 
 <img src="images/pr2pick4x.gif" width="960" />
 
-![labeled-segmented]
+![clustered-objects]
 ---
 
 
