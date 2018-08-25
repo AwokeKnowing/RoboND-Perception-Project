@@ -1,18 +1,18 @@
 ## Project: Perception Pick & Place
-<img src="pr2pick4x.gif" width="480" />
-<img src="capturefeatures4x.gif" width="480" />
+<img src="images/pr2pick4x.gif" width="480" />
+<img src="images/capturefeatures4x.gif" width="480" />
 ---
 [//]: # (Image References)
-[accuracy]: ./accuracy.png
-[clustered-objects]: ./clustered-objects.jpg
-[clusters]: ./clusters.jpg
-[confusion]: ./confusion.jpg
-[downsampled]: ./downsampled.jpg
-[labeled1]: ./labeled1.jpg
-[labeled2]: ./labeled2.jpg
-[labeled3]: ./labeled.jpg
-[labeled]: ./labeled-segmented.jpg
-[table]: ./table.jpg
+[accuracy]: ./images/accuracy.png
+[clustered-objects]: ./images/clustered-objects.jpg
+[clusters]: ./images/clusters.jpg
+[confusion]: ./images/confusion.jpg
+[downsampled]: ./images/downsampled.jpg
+[labeled1]: ./images/labeled1.jpg
+[labeled2]: ./images/labeled2.jpg
+[labeled3]: ./images/labeled.jpg
+[labeled]: ./images/labeled-segmented.jpg
+[table]: ./images/table.jpg
 
 ---
 
