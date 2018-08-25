@@ -30,56 +30,33 @@
 ![labeled]
 
 
+The main task in this project is to correctly recognize various objects on a table, locate them in 3D space, and output information needed for a robot to move the object to one of the bins.
+### Environment
+After setting up the provided simulation environment based on ROS, Rviz, and Gazebo, the first step is to subscribe to the point cloud message.    The depth channel from the RGB-D sensor is mapped to 3D world space, and each point retains it's color (RGB) information.  
+### Solution
+To complete the task, we preprocess the data, cluster the points into objects, use an SVM model to classify each object point cloud as one of several objects, and provide the centroid of each recognized object to the pick and place server.
+The main code for the solution is contained in `object_recognition.py`.
+#### Preprocessing
+To begin the task, we apply a simple noise filter to remove points which are not close to any cluster of other points.   We then filter out any points that fall outside of a rectangular 'work area'  using passthrough filters along the z  and x planes. The remaining points are then downsampled using a voxel-based downsampler.  The downsampled points will be the input into our object segmentation and recognition.
+#### Clustering and Segmentation
+To obtain separate pointclouds for each object, we first identify the 'table' object using the RANSAC algorithm to find the plane of the table.  We remove the points recognized as part of the table, and the rest of the data is considered to belong to the objects to be recognized.   
+To segment this remaining point cloud into objects, we apply a euclidean clustering using hyperparameters empiracally determined to result in pointclouds matching the objects to be recognized.  Primarily, we determine the min/max number of point in any object and a clustering radius threshold.  To visualize the clusters, we apply a different color to each segmented cluster (object).  A centroid for each object is also caculated from the point cloud.
+#### Recognition
+Recognition is performed using an SVM classifier which takes as input some engineered features based on color and normal histograms of an objects XYZRGB pointcloud.  The SVM outputs a class number corresponding to the predicted object.
+For gathering the training set, we collect 50 RGBD samples of each object rotated at random angles.  
 
+To obtain orientation-invariant features, we compute three sets of histogram features and concatenate them.  The histograms are highly effective since the objects have brightly colored textures, distinctive textures as well as distincive shapes.  
+1. 32 bin histogram of the R, G, and B color values
+2. 32 bin histogram of H, S, and V color values
+3. 32 bin histogram of X, Y, Z Normals
+In total, there are 288 features (32 * 3 + 32 * 3  + 32 * 3) in each sample.   Each feature is normalized to be -1 to 1 so the XYZ and color features would have similar scale
+We trained a single model containing all the objects in worlds 1, 2, and 3, which were  8 objects total: 'sticky_notes', 'book', 'snacks', 'biscuits', 'eraser', 'soap2', 'soap', 'glue'.   Thus the training data set contained 400 samples (50 * 8) with 288 features and classifed 8 objects.
+The resulting model is trained to convergance and achieves an accuracy of 85% on the validation set.   
+We plot a matrix of confusion showing high confidence levels.  The errors evenly spread, hinting that the errors may be due to unfavorable rotations where the angle of the object causes little useful pointcloud data and thus a random guess by the classifier is as good as any.  
 
-# Required Steps for a Passing Submission:
-1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify). 
-2. Write a ROS node and subscribe to `/pr2/world/points` topic. This topic contains noisy point cloud data that you must work with.
-3. Use filtering and RANSAC plane fitting to isolate the objects of interest from the rest of the scene.
-4. Apply Euclidean clustering to create separate clusters for individual items.
-5. Perform object recognition on these objects and assign them labels (markers in RViz).
-6. Calculate the centroid (average in x, y and z) of the set of points belonging to that each object.
-7. Create ROS messages containing the details of each object (name, pick_pose, etc.) and write these messages out to `.yaml` files, one for each of the 3 scenarios (`test1-3.world` in `/pr2_robot/worlds/`).  [See the example `output.yaml` for details on what the output should look like.](https://github.com/udacity/RoboND-Perception-Project/blob/master/pr2_robot/config/output.yaml)  
-8. Submit a link to your GitHub repo for the project or the Python code for your perception pipeline and your output `.yaml` files (3 `.yaml` files, one for each test world).  You must have correctly identified 100% of objects from `pick_list_1.yaml` for `test1.world`, 80% of items from `pick_list_2.yaml` for `test2.world` and 75% of items from `pick_list_3.yaml` in `test3.world`.
-9. Congratulations!  Your Done!
-
-# Extra Challenges: Complete the Pick & Place
-7. To create a collision map, publish a point cloud to the `/pr2/3d_map/points` topic and make sure you change the `point_cloud_topic` to `/pr2/3d_map/points` in `sensors.yaml` in the `/pr2_robot/config/` directory. This topic is read by Moveit!, which uses this point cloud input to generate a collision map, allowing the robot to plan its trajectory.  Keep in mind that later when you go to pick up an object, you must first remove it from this point cloud so it is removed from the collision map!
-8. Rotate the robot to generate collision map of table sides. This can be accomplished by publishing joint angle value(in radians) to `/pr2/world_joint_controller/command`
-9. Rotate the robot back to its original state.
-10. Create a ROS Client for the “pick_place_routine” rosservice.  In the required steps above, you already created the messages you need to use this service. Checkout the [PickPlace.srv](https://github.com/udacity/RoboND-Perception-Project/tree/master/pr2_robot/srv) file to find out what arguments you must pass to this service.
-11. If everything was done correctly, when you pass the appropriate messages to the `pick_place_routine` service, the selected arm will perform pick and place operation and display trajectory in the RViz window
-12. Place all the objects from your pick list in their respective dropoff box and you have completed the challenge!
-13. Looking for a bigger challenge?  Load up the `challenge.world` scenario and see if you can get your perception pipeline working there!
-
-## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
-
----
-### Writeup / README
-
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  
-
-You're reading it!
-
-### Exercise 1, 2 and 3 pipeline implemented
-#### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
-
-#### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
-
-#### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
-Here is an example of how to include an image in your writeup.
-
-![demo-1](https://user-images.githubusercontent.com/20687560/28748231-46b5b912-7467-11e7-8778-3095172b7b19.png)
-
-### Pick and Place Setup
-
-#### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
-
-And here's another image! 
-![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
-
-Spend some time at the end to discuss your code, what techniques you used, what worked and why, where the implementation might fail and how you might improve it if you were going to pursue this project further.  
+Interestingly, the confusion matrix shows a bright spot of misclassifying glue and soap2, which is also the only error in the final table recognition task.  The error however is mostly caused by the soap object occluding the glue object.  If the soap object were removed before the glue (misclassified as soap2), then subsequently the glue object would be recognized correctly for 100% accuracy.   
+Once the objects are recognized, their centroid is calculated and they are compared to the pick list, and if they are in the pick list, a yaml-formatted message is output and message sent to a separate task which takes a centroid source and destination and handles grasping the object and moving it to the destination.
+The task of building up the collusion map was left for a future effort, but even without it, the robot is able to collect several of the objects.
 
 
 
