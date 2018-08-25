@@ -18,7 +18,7 @@
 ![labeled-segmented]
 ---
 
-![labeled]
+
 
 ---
 
@@ -76,7 +76,7 @@ Once the objects are recognized, their centroid is calculated and they are compa
 
 ![labeled1]
 ![labeled2]
-![labeled3]
+![labeled]
 
 
 The task of building up the collusion map was left for a future effort, but even without it, the robot is able to collect several of the objects.
