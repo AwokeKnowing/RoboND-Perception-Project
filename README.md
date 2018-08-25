@@ -1,8 +1,8 @@
 ## Project: Perception Pick & Place
-<img src="images/pr2pick4x.gif" width="960" />
-![labeled3]
 ---
+
 [//]: # (Image References)
+
 [accuracy]: ./images/accuracy.png
 [clustered-objects]: ./images/clustered-objects.jpg
 [clusters]: ./images/clusters.jpg
@@ -14,6 +14,10 @@
 [labeled]: ./images/labeled-segmented.jpg
 [table]: ./images/table.jpg
 
+---
+
+<img src="images/pr2pick4x.gif" width="960" />
+![labeled3]
 ---
 
 
