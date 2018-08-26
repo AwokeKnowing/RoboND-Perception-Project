@@ -60,14 +60,14 @@ def compute_normal_histograms(normal_cloud):
         norm_z_vals.append(norm_component[2])
 
     # TODO: Compute histograms
-    x_hist = np.histogram(norm_x_vals, bins=32, range=(0, 256))
-    y_hist = np.histogram(norm_y_vals, bins=32, range=(0, 256))
-    z_hist = np.histogram(norm_z_vals, bins=32, range=(0, 256))
+    x_hist = np.histogram(norm_x_vals, bins=12, range=(-1, 1))
+    y_hist = np.histogram(norm_y_vals, bins=12, range=(-1, 1))
+    z_hist = np.histogram(norm_z_vals, bins=12, range=(-1, 1))
     # TODO: Concatenate and normalize the histograms
     hist_features = np.concatenate((x_hist[0], y_hist[0], z_hist[0])).astype(np.float64)
     
     # Generate random features for demo mode.  
     # Replace normed_features with your feature vector
-    normed_features = hist_features / np.sum(hist_features) 
+    # normed_features = 0.5 + hist_features / 2 
 
     return normed_features

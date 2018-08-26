@@ -58,9 +58,9 @@ To obtain orientation-invariant features, in addition to capturing multiple angl
 
 1. 32 bin histogram of the R, G, and B color values
 2. 32 bin histogram of H, S, and V color values
-3. 32 bin histogram of X, Y, Z Normals
+3. 12 bin histogram of X, Y, Z Normals
 
-In total, there are 288 features (32 * 3 + 32 * 3  + 32 * 3) in each sample.   Each feature is normalized to be -1 to 1 so the XYZ and color features would have similar scale.
+In total, there are 228 features (32 * 3 + 32 * 3  + 12 * 3) in each sample.   Each feature is normalized to be -1 to 1 so the XYZ and color features would have similar scale.
 
 ```python
 # Extract histogram features
@@ -73,16 +73,16 @@ feature = np.concatenate((chists, nhists, hsvhists))
 
 (see `features.py` for the implementation of the histogramming)
 
-We trained a single model containing all the objects in worlds 1, 2, and 3, which were  8 objects total: 'sticky_notes', 'book', 'snacks', 'biscuits', 'eraser', 'soap2', 'soap', 'glue'.   Thus the training data set contained 400 samples (50 * 8) with 288 features and classifed 8 objects.
+We trained a single model containing all the objects in worlds 1, 2, and 3, which were  8 objects total: 'sticky_notes', 'book', 'snacks', 'biscuits', 'eraser', 'soap2', 'soap', 'glue'.   Thus the training data set contained 400 samples (50 * 8) with 228 features and classifed 8 objects.
 
-The resulting model is trained to convergance and achieves an accuracy of 85% on the validation set.
+The resulting model is trained to convergance and achieves an accuracy of 86% on the validation set.
 ![accuracy]
 
 We plot a matrix of confusion showing high confidence levels.  The errors evenly spread, hinting that the errors may be due to unfavorable rotations where the angle of the object causes little useful pointcloud data and thus a random guess by the classifier is as good as any.  
 
 ![confusion]
 
-Interestingly, the confusion matrix shows a bright spot of misclassifying glue and soap2, which is also the only error in the final table recognition task.  The error however is mostly caused by the soap object occluding the glue object.  If the soap object were removed before the glue (misclassified as soap2), then subsequently the glue object would be recognized correctly for 100% accuracy.
+Interestingly, the confusion matrix shows a bright spot of misclassifying glue, which is also the only error in the final table recognition task.  The error however is mostly caused by the soap object occluding the glue object.  If the soap object were removed before the glue, then subsequently the glue object would be recognized correctly for 100% accuracy.
 
 Once the objects are recognized, their centroid is calculated and they are compared to the pick list, and if they are in the pick list, a yaml-formatted message is output and message sent to a separate task which takes a centroid source and destination and handles grasping the object and moving it to the destination.
 
